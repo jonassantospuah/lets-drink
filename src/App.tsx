@@ -1,35 +1,62 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import React, { useState } from 'react';
+import Input from './components/Input';
+import Button from './components/Button';
+
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [quantidade, setQuantidade] = useState('');
+  const [teorAlcoolico, setTeorAlcoolico] = useState('');
+  const [tempoBebendo, setTempoBebendo] = useState('');
+  const [nivelBebado, setNivelBebado] = useState<string>('');
+  const [mostrarResultado, setMostrarResultado] = useState(false);
+
+  const calcularNivelBebado = () => {
+    const quantidadeFloat = parseFloat(quantidade);
+    const teorAlcoolicoFloat = parseFloat(teorAlcoolico);
+    const tempoBebendoInt = parseInt(tempoBebendo);
+
+    if (isNaN(quantidadeFloat) || isNaN(teorAlcoolicoFloat) || isNaN(tempoBebendoInt)) {
+      alert('Por favor, insira valores válidos.');
+      return;
+    }
+
+    const resultado = (quantidadeFloat * teorAlcoolicoFloat) / tempoBebendoInt;
+
+    
+
+    if (resultado > 300 ) {
+      setNivelBebado('Extremamente bebado cuidado !!!');
+    } else if (resultado > 162) {
+      setNivelBebado('Muito Bebado');
+    } else if (resultado >= 161) {
+      setNivelBebado('Bebado');
+    }else if ( resultado < 160 && resultado > 80){ 
+      setNivelBebado('Levemente Bebado');
+    }else if ( resultado < 80 && resultado > 0 ){ 
+      setNivelBebado('Praticamente sem efeitos do alcool');
+    }else { 
+      setNivelBebado('Nem bebeu');
+    }
+
+    setMostrarResultado(true);
+  };
 
   return (
     <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <p className='text-5xl font-bold m-5'> Let's Drink </p>
+      <Input label="Quantidade em (ml)" value={quantidade} onChange={setQuantidade} />
+      <Input label="Teor alcoólico em (inteiro)" value={teorAlcoolico} onChange={setTeorAlcoolico} />
+      <Input label="Tempo bebendo em (min)" value={tempoBebendo} onChange={setTempoBebendo} />
+
+      <Button onClick={calcularNivelBebado} label="Calcular nível de embriaguez" />
+
+      {mostrarResultado && (
+        <div>
+          <p>Nível de embriaguez: {nivelBebado}</p>
+        </div>
+      )}
     </>
-  )
+  );
 }
 
-export default App
+export default App;
